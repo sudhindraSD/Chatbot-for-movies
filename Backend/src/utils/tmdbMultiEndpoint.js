@@ -129,22 +129,22 @@ export const getMultiEndpointMovies = async ({
 
     console.log("[TMDB-MULTI] Building 16 parallel requests...");
 
-    // 1. CLASSIC MOVIES (before 1990) - 3 requests
-    for (let i = 1; i <= 3; i++) {
+    // 1. CLASSIC MOVIES (before 1990) - 1 request
+    for (let i = 1; i <= 1; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
             ...baseParams,
             "primary_release_date.lte": "1990-12-31",
             "vote_average.gte": 6.5,
-            page: Math.floor(Math.random() * 50) + 1,
+            page: Math.floor(Math.random() * 5) + 1, // Reduced from 50 to 5
           },
         })
       );
     }
 
-    // 2. GOLDEN ERA (1990-2010) - 3 requests
-    for (let i = 1; i <= 3; i++) {
+    // 2. GOLDEN ERA (1990-2010) - 1 request
+    for (let i = 1; i <= 1; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
@@ -152,14 +152,14 @@ export const getMultiEndpointMovies = async ({
             "primary_release_date.gte": "1990-01-01",
             "primary_release_date.lte": "2010-12-31",
             "vote_average.gte": 6.0,
-            page: Math.floor(Math.random() * 100) + 1,
+            page: Math.floor(Math.random() * 20) + 1, // Reduced from 100 to 20
           },
         })
       );
     }
 
-    // 3. MODERN HITS (2011-2020) - 3 requests
-    for (let i = 1; i <= 3; i++) {
+    // 3. MODERN HITS (2011-2020) - 1 request
+    for (let i = 1; i <= 1; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
@@ -167,42 +167,42 @@ export const getMultiEndpointMovies = async ({
             "primary_release_date.gte": "2011-01-01",
             "primary_release_date.lte": "2020-12-31",
             "vote_average.gte": 6.5,
-            page: Math.floor(Math.random() * 200) + 1,
+            page: Math.floor(Math.random() * 50) + 1, // Reduced from 200 to 50
           },
         })
       );
     }
 
-    // 4. RECENT BLOCKBUSTERS (2021-2024) - 3 requests
-    for (let i = 1; i <= 3; i++) {
+    // 4. RECENT BLOCKBUSTERS (2021-2024) - 1 request
+    for (let i = 1; i <= 1; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
             ...baseParams,
             "primary_release_date.gte": "2021-01-01",
             "vote_average.gte": 6.0,
-            page: Math.floor(Math.random() * 100) + 1,
+            page: Math.floor(Math.random() * 20) + 1, // Reduced from 100 to 20
           },
         })
       );
     }
 
-    // 5. HIGH RATED GEMS (all time) - 2 requests
-    for (let i = 1; i <= 2; i++) {
+    // 5. HIGH RATED GEMS (all time) - 1 request
+    for (let i = 1; i <= 1; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
             ...baseParams,
             "vote_average.gte": 7.5,
             "vote_count.gte": 500,
-            page: Math.floor(Math.random() * 150) + 1,
+            page: Math.floor(Math.random() * 30) + 1, // Reduced from 150 to 30
           },
         })
       );
     }
 
-    // 6. HIDDEN GEMS (lower vote count but decent rating) - 2 requests
-    for (let i = 1; i <= 2; i++) {
+    // 6. HIDDEN GEMS (lower vote count but decent rating) - 1 request
+    for (let i = 1; i <= 1; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
@@ -210,16 +210,16 @@ export const getMultiEndpointMovies = async ({
             "vote_average.gte": 6.5,
             "vote_count.gte": 100,
             "vote_count.lte": 1000,
-            page: Math.floor(Math.random() * 300) + 1,
+            page: Math.floor(Math.random() * 50) + 1, // Reduced from 300 to 50
           },
         })
       );
     }
 
-    // 7. INDIAN CINEMA DOMINATION (60-70% of total) - 15 requests
+    // 7. INDIAN CINEMA DOMINATION (60-70% of total) - 8 requests
     // Languages: Hindi (hi), Kannada (kn), Telugu (te), Tamil (ta), Malayalam (ml)
     const indianLanguages = "hi|kn|te|ta|ml";
-    for (let i = 1; i <= 15; i++) {
+    for (let i = 1; i <= 8; i++) {
       requests.push(
         axios.get(`${TMDB_BASE_URL}/discover/movie`, {
           params: {
@@ -227,7 +227,7 @@ export const getMultiEndpointMovies = async ({
             with_original_language: indianLanguages, // Override 'en'
             "primary_release_date.gte": "2000-01-01", // Wider date range for more classics
             "vote_average.gte": 5.5, // Slightly lower threshold to get more mass entertainers
-            page: Math.floor(Math.random() * 50) + 1,
+            page: Math.floor(Math.random() * 2) + 1, // Reduced from 50 to 2 (very sparse for specific genres)
           },
         })
       );
@@ -237,8 +237,10 @@ export const getMultiEndpointMovies = async ({
       `[TMDB-MULTI] 🚀 Firing ${requests.length} parallel requests...`
     );
 
-    // Execute all requests in parallel
-    const responses = await Promise.all(requests);
+    // Execute all requests in parallel with individual error handling
+    const responses = await Promise.all(
+      requests.map((p) => p.catch((e) => ({ error: e })))
+    );
 
     // Combine all results
     let allMovies = [];

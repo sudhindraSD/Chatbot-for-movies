@@ -20,6 +20,10 @@ const startServer = async () => {
         `[SERVER] 🔑 GROQ_API_KEY is ${process.env.GROQ_API_KEY ? "SET ✅" : "MISSING ❌"
         }`
       );
+      console.log(
+        `[SERVER] 🎬 TMDB_API_KEY is ${process.env.TMDB_API_KEY ? "SET ✅" : "MISSING ❌"
+        }`
+      );
     });
 
     server.on("error", (error) => {

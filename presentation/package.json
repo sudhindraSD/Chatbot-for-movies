@@ -1,0 +1,12 @@
+{
+    "name": "flickpick-presentation",
+    "version": "1.0.0",
+    "description": "PPT generator for FlickPick",
+    "main": "generate_ppt.js",
+    "scripts": {
+        "generate": "node generate_ppt.js"
+    },
+    "dependencies": {
+        "pptxgenjs": "^3.12.0"
+    }
+}

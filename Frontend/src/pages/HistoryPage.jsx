@@ -40,9 +40,9 @@ const HistoryPage = () => {
     // DOUBLE CONFIRMATION - this is serious!
     const confirmed = window.confirm(
       "⚠️ CLEAR YOUR ENTIRE MOVIE HISTORY?\n\n" +
-        "This will permanently delete ALL your picked movies.\n" +
-        "This action CANNOT be undone!\n\n" +
-        "Are you absolutely sure?"
+      "This will permanently delete ALL your picked movies.\n" +
+      "This action CANNOT be undone!\n\n" +
+      "Are you absolutely sure?"
     );
 
     if (!confirmed) return;
@@ -61,6 +61,19 @@ const HistoryPage = () => {
       toast.error("Oops! Couldn't clear history. Try again.");
     } finally {
       setClearing(false);
+    }
+  };
+
+  const handleRemoveMovie = async (movieId) => {
+    if (!window.confirm("Remove this movie from your history?")) return;
+
+    try {
+      await movieService.removeFromHistory(movieId);
+      setHistory((prev) => prev.filter((m) => m._id !== movieId));
+      toast.success("Movie removed from history");
+    } catch (error) {
+      console.error("Failed to remove movie:", error);
+      toast.error("Failed to remove movie");
     }
   };
 
@@ -151,9 +164,18 @@ const HistoryPage = () => {
                     />
                   )}
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-white mb-2">
-                      {movie.movieTitle}
-                    </h3>
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-2xl font-bold text-white mb-2">
+                        {movie.movieTitle}
+                      </h3>
+                      <button
+                        onClick={() => handleRemoveMovie(movie._id)}
+                        className="text-gray-500 hover:text-red-500 transition-colors p-2"
+                        title="Remove from history"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                     <div className="flex items-center gap-4 text-sm text-gray-400">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />

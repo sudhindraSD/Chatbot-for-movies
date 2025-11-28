@@ -137,3 +137,17 @@ export const clearHistory = async () => {
     throw new Error(error.message || "Failed to clear history");
   }
 };
+
+/**
+ * Remove a single movie from history
+ * @param {string} movieId - ID of the history entry to remove
+ * @returns {Promise<Object>} Response with success message
+ */
+export const removeFromHistory = async (movieId) => {
+  try {
+    const response = await api.delete(`/movies/history/${movieId}`);
+    return response;
+  } catch (error) {
+    throw new Error(error.message || "Failed to remove movie");
+  }
+};

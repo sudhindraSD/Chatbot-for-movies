@@ -75,6 +75,16 @@ FlickPick **remembers everything**.
 
 ---
 
+## 📊 Project Presentation
+
+Want a quick summary? You can generate a PowerPoint presentation for this project.
+
+1.  Navigate to the `presentation` folder.
+2.  Run `npm install` to install dependencies.
+3.  Run `npm run generate` to create `FlickPick_Presentation.pptx`.
+
+---
+
 ### 👨‍💻 Setup & Run
 
 1.  **Clone Repo**

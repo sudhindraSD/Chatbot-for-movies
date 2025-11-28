@@ -6,6 +6,7 @@ import {
   getTrailer,
   getUserStats,
   clearHistory,
+  removeFromHistory,
   testTmdbMultiEndpoint,
 } from "../controllers/movieController.js";
 import { protect } from "../middleware/auth.middleware.js";
@@ -29,6 +30,9 @@ router.get("/history", protect, getHistory);
 
 // DELETE /api/v1/movies/history - CLEAR ALL HISTORY (⚠️ CANNOT BE UNDONE)
 router.delete("/history", protect, clearHistory);
+
+// DELETE /api/v1/movies/history/:movieId - Remove single movie
+router.delete("/history/:movieId", protect, removeFromHistory);
 
 // GET /api/v1/movies/trailer/:movieId - get trailer URL
 router.get("/trailer/:movieId", protect, getTrailer);

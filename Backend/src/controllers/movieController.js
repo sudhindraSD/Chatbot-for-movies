@@ -977,6 +977,58 @@ export const clearHistory = async (req, res) => {
 };
 
 /**
+ * Remove a single movie from history
+ *
+ * @route   DELETE /api/v1/movies/history/:movieId
+ * @access  Private
+ */
+export const removeFromHistory = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    const { movieId } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    // Delete specific movie entry for this user
+    // We use findOneAndDelete to ensure we only delete if it belongs to this user
+    const result = await MovieHistory.findOneAndDelete({
+      _id: movieId, // This is the document ID (MongoDB _id), not the TMDB ID
+      userId,
+    });
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Movie not found in history",
+      });
+    }
+
+    // Decrement user's total movie count
+    await User.findByIdAndUpdate(userId, {
+      $inc: { totalMoviesPicked: -1 },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Movie removed from history",
+      movieId,
+    });
+  } catch (error) {
+    console.error("[Movies] Error removing movie from history:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to remove movie",
+      error: error.message,
+    });
+  }
+};
+
+/**
  * TEST ENDPOINT: Get movies using the new multi-endpoint TMDB strategy.
  * This endpoint is for testing the 16-endpoint parallel TMDB approach before production.
  *
